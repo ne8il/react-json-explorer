@@ -2,6 +2,7 @@ var React = require('react')
 var Immutable = require('immutable');
 var JsonInput = require('./JsonInput.js');
 var OutputTree = require('./OutputTree.js');
+var store = require('store');
 
 var ValidationMessage = React.createClass({
   render : function(){
@@ -11,8 +12,24 @@ var ValidationMessage = React.createClass({
 
 var Page = React.createClass({
   getInitialState : function(){
-    var initial = '{"key":"value","arrayKey":[1,2,3,4]}';
+    var inputValue = store.get('inputValue');
+    var valid = (inputValue && this._isValidJson(inputValue));
+    console.log(valid);
+
+    var initial =  valid ? inputValue : '{"key":"value","arrayKey":[1,2,3,4]}';
+    console.log(initial);
     return {value: initial, validInput : true};
+  },
+  _isValidJson : function(str){
+    var valid = true;
+    try {
+      JSON.parse(str);
+    }catch(e){
+      console.log('false');
+      valid = false;
+    }finally{
+      return valid;
+    }
   },
   onInputChange : function(val) {
     try{
@@ -22,6 +39,8 @@ var Page = React.createClass({
         value : val,
         validInput : true
       });
+      store.set('inputValue', val);
+
     }catch(e){
       this.setState({
         validInput : false
@@ -35,7 +54,7 @@ var Page = React.createClass({
             Input : {outputMessage}
             <JsonInput value={this.state.value} onInputChange={this.onInputChange}/>
 
-            Output : 
+            Output :
             <OutputTree tree={this.state.value}/>
           </div>
   }

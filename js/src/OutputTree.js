@@ -18,10 +18,10 @@ var OutputMapNode = React.createClass({
   },
   render : function(){
 
-    var str = <a href="#" onClick={this.handleToggle}>{this.state.collapsed ? '+' : '-'}</a>;
+    var collapseToggle = <a href="#" onClick={this.handleToggle}>{this.state.collapsed ? '+' : '-'}</a>;
 
     if(this.state.collapsed){
-        return <div className="mapRow">{str} [Object object]</div>
+        return <div className="mapRow">{collapseToggle} [Object object]</div>
     }
 
     var nodes = this.props.leaf.map(function(value, key){
@@ -29,7 +29,7 @@ var OutputMapNode = React.createClass({
     });
 
     return <div className="map">
-    {str} 
+    {collapseToggle} 
     {String.fromCharCode(123)}
     {nodes.toJS()}
     {String.fromCharCode(125)}

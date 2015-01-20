@@ -1,0 +1,33 @@
+* {
+  color:#333;
+}
+
+#page {
+  width:960px;
+  margin:0px auto;
+}
+
+textarea {
+  width:100%;
+}
+
+.mapKey {
+  display:inline-block;
+  margin-left : 10px;
+}
+
+.mapValue, .arrayValue, .array {
+  display:inline-block;
+}
+
+.arrayValue:after {
+  content : ","
+}
+
+.arrayValue:last-of-type:after {
+  content : ""
+}
+
+.map .map {
+  margin-left: 10px;
+}

@@ -1,35 +1,6 @@
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"/Users/neil/gitprojects/react-json-explorer/js/src/main.js":[function(require,module,exports){
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"/Users/neil/gitprojects/react-json-explorer/js/src/JsonInput.js":[function(require,module,exports){
 var React = require('react')
 var Immutable = require('immutable');
-
-var OutputTree = React.createClass({displayName: "OutputTree",
-  render: function(){
-    var tree = Immutable.fromJS(JSON.parse(this.props.tree));
-
-    return React.createElement("div", {className: "tree"}, React.createElement(OutputNode, {leaf: tree}));
-  }
-});
-
-var OutputNode = React.createClass({displayName: "OutputNode",
-  render : function(){
-
-    if(Immutable.Map.isMap(this.props.leaf)){
-      var nodes = this.props.leaf.map(function(value, key){
-          return React.createElement("div", null, React.createElement("div", {className: "key"}, key, " : "), React.createElement("div", {className: "value"}, React.createElement(OutputNode, {leaf: value})))
-      });
-
-      return React.createElement("div", {className: "map"}, nodes.toJS());
-    }else if(Immutable.List.isList(this.props.leaf)){
-      var nodes = this.props.leaf.map(function(value, index){
-        return React.createElement(OutputNode, {leaf: value})
-      });
-
-      return React.createElement("div", {className: "array"}, nodes.toJS());
-    }else{
-      return React.createElement("div", null, String(this.props.leaf));
-    }
-  }
-});
 
 var JsonInput = React.createClass({displayName: "JsonInput",
   getInitialState: function() {
@@ -43,13 +14,60 @@ var JsonInput = React.createClass({displayName: "JsonInput",
   render : function(){
     var value = this.state.value;
     var styleProps = {
-      'width' : 500,
+      'width' : "100%",
+      'font-size' : '16px',
       'height' : 200
     }
 
     return React.createElement("textarea", {style: styleProps, value: value, onChange: this.handleChange})
   }
 });
+
+module.exports = JsonInput;
+
+},{"immutable":"/Users/neil/gitprojects/react-json-explorer/node_modules/immutable/dist/immutable.js","react":"/Users/neil/gitprojects/react-json-explorer/node_modules/react/react.js"}],"/Users/neil/gitprojects/react-json-explorer/js/src/OutputTree.js":[function(require,module,exports){
+var React = require('react')
+var Immutable = require('immutable');
+
+var OutputTree = React.createClass({displayName: "OutputTree",
+  render: function(){
+    var tree = Immutable.fromJS(JSON.parse(this.props.tree));
+    return React.createElement("div", {className: "tree"}, React.createElement(OutputNode, {leaf: tree}));
+  }
+});
+
+var OutputNode = React.createClass({displayName: "OutputNode",
+  render : function(){
+
+    if(Immutable.Map.isMap(this.props.leaf)){
+      var nodes = this.props.leaf.map(function(value, key){
+        return React.createElement("div", {className: "mapRow"}, React.createElement("div", {className: "mapKey"}, key, " : "), " ", React.createElement(OutputNode, {className: "mapValue", leaf: value}))
+      });
+
+      return React.createElement("div", {className: "map"}, 
+      String.fromCharCode(123), 
+      nodes.toJS(), 
+      String.fromCharCode(125)
+      );
+    }else if(Immutable.List.isList(this.props.leaf)){
+      var nodes = this.props.leaf.map(function(value, index){
+        return React.createElement(OutputNode, {leaf: value, className: "arrayValue"})
+      });
+
+      return React.createElement("div", {className: "array"}, nodes.toJS());
+    }else{
+      return React.createElement("div", {className: this.props.className}, String(this.props.leaf));
+    }
+  }
+});
+
+module.exports = OutputTree;
+
+},{"immutable":"/Users/neil/gitprojects/react-json-explorer/node_modules/immutable/dist/immutable.js","react":"/Users/neil/gitprojects/react-json-explorer/node_modules/react/react.js"}],"/Users/neil/gitprojects/react-json-explorer/js/src/main.js":[function(require,module,exports){
+var React = require('react')
+var Immutable = require('immutable');
+var JsonInput = require('./JsonInput.js');
+var OutputTree = require('./OutputTree.js');
 
 var ValidationMessage = React.createClass({displayName: "ValidationMessage",
   render : function(){
@@ -80,8 +98,10 @@ var Page = React.createClass({displayName: "Page",
     var outputMessage = this.state.validInput ? '' : React.createElement(ValidationMessage, {text: "Invalid JSON"});
 
     return React.createElement("div", null, 
-            outputMessage, 
+            "Input : ", outputMessage, 
             React.createElement(JsonInput, {value: this.state.value, onInputChange: this.onInputChange}), 
+
+            "Output :",  
             React.createElement(OutputTree, {tree: this.state.value})
           )
   }
@@ -89,10 +109,10 @@ var Page = React.createClass({displayName: "Page",
 
 React.render(
   React.createElement(Page, null),
-  document.getElementById('output')
+  document.getElementById('page')
 );
 
-},{"immutable":"/Users/neil/gitprojects/react-json-explorer/node_modules/immutable/dist/immutable.js","react":"/Users/neil/gitprojects/react-json-explorer/node_modules/react/react.js"}],"/Users/neil/gitprojects/react-json-explorer/node_modules/immutable/dist/immutable.js":[function(require,module,exports){
+},{"./JsonInput.js":"/Users/neil/gitprojects/react-json-explorer/js/src/JsonInput.js","./OutputTree.js":"/Users/neil/gitprojects/react-json-explorer/js/src/OutputTree.js","immutable":"/Users/neil/gitprojects/react-json-explorer/node_modules/immutable/dist/immutable.js","react":"/Users/neil/gitprojects/react-json-explorer/node_modules/react/react.js"}],"/Users/neil/gitprojects/react-json-explorer/node_modules/immutable/dist/immutable.js":[function(require,module,exports){
 /**
  *  Copyright (c) 2014, Facebook, Inc.
  *  All rights reserved.

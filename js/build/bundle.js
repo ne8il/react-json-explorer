@@ -36,25 +36,51 @@ var OutputTree = React.createClass({displayName: "OutputTree",
   }
 });
 
-var OutputNode = React.createClass({displayName: "OutputNode",
+var OutputMapNode = React.createClass({displayName: "OutputMapNode",
+  getInitialState : function(){
+    return {collapsed : false}
+  },
+  handleToggle : function(e){
+    this.setState({collapsed : !this.state.collapsed});
+    return false;
+  },
   render : function(){
 
+    var str = React.createElement("a", {href: "#", onClick: this.handleToggle}, this.state.collapsed ? '+' : '-');
+
+    if(this.state.collapsed){
+        return React.createElement("div", {className: "mapRow"}, str, " [Object object]")
+    }
+
+    var nodes = this.props.leaf.map(function(value, key){
+      return React.createElement("div", {className: "mapRow"}, React.createElement("div", {className: "mapKey"}, key, " : "), " ", React.createElement(OutputNode, {className: "mapValue", leaf: value}))
+    });
+
+    return React.createElement("div", {className: "map"}, 
+    str, 
+    String.fromCharCode(123), 
+    nodes.toJS(), 
+    String.fromCharCode(125)
+    );
+  }
+});
+
+var OutputListNode = React.createClass({displayName: "OutputListNode",
+  render : function(){
+    var nodes = this.props.leaf.map(function(value, index){
+      return React.createElement(OutputNode, {leaf: value, className: "arrayValue"})
+    });
+
+    return React.createElement("div", {className: "array"}, nodes.toJS());
+  }
+});
+
+var OutputNode = React.createClass({displayName: "OutputNode",
+  render : function(){
     if(Immutable.Map.isMap(this.props.leaf)){
-      var nodes = this.props.leaf.map(function(value, key){
-        return React.createElement("div", {className: "mapRow"}, React.createElement("div", {className: "mapKey"}, key, " : "), " ", React.createElement(OutputNode, {className: "mapValue", leaf: value}))
-      });
-
-      return React.createElement("div", {className: "map"}, 
-      String.fromCharCode(123), 
-      nodes.toJS(), 
-      String.fromCharCode(125)
-      );
+      return React.createElement(OutputMapNode, React.__spread({},  this.props));
     }else if(Immutable.List.isList(this.props.leaf)){
-      var nodes = this.props.leaf.map(function(value, index){
-        return React.createElement(OutputNode, {leaf: value, className: "arrayValue"})
-      });
-
-      return React.createElement("div", {className: "array"}, nodes.toJS());
+      return React.createElement(OutputListNode, React.__spread({},  this.props));
     }else{
       return React.createElement("div", {className: this.props.className}, String(this.props.leaf));
     }

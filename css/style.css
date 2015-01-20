@@ -3,7 +3,8 @@
 }
 
 body {
-  background:#80deea;
+  background:#b3e5fc;
+  font-family: 'Roboto', sans-serif;
 }
 
 #page {
@@ -19,14 +20,17 @@ textarea {
 }
 
 .mapKey {
-  display:inline-block;
+  
   margin-left : 10px;
 }
 
 .mapValue, .arrayValue, .array {
-  display:inline-block;
+
 }
 
+.arrayValue {
+  margin-right:5px;
+}
 .arrayValue:after {
   content : ","
 }
@@ -36,7 +40,6 @@ textarea {
 }
 
 .map {
-  border:1px solid #999;
   padding:5px;
 }
 

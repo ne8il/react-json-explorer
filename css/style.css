@@ -20,12 +20,11 @@ textarea {
 }
 
 .mapKey {
-  
   margin-left : 10px;
 }
 
-.mapValue, .arrayValue, .array {
-
+.mapKey, .mapValue, .arrayValue, .array {
+  display:inline-block;
 }
 
 .arrayValue {
@@ -43,6 +42,6 @@ textarea {
   padding:5px;
 }
 
-.map .map {
+.map .map, .mapRow .mapRow {
   margin-left: 10px;
 }

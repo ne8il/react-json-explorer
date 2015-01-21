@@ -21,7 +21,7 @@ var OutputMapNode = React.createClass({
     var collapseToggle = <a href="#" onClick={this.handleToggle}>{this.state.collapsed ? '+' : '-'}</a>;
 
     if(this.state.collapsed){
-        return <div className="mapRow">{collapseToggle} [Object object]</div>
+        return <div className="mapRow">{collapseToggle} {String.fromCharCode(123)}...{String.fromCharCode(125)}</div>
     }
 
     var nodes = this.props.leaf.map(function(value, key){
@@ -29,9 +29,8 @@ var OutputMapNode = React.createClass({
     });
 
     return <div className="map">
-    {collapseToggle} 
-    {String.fromCharCode(123)}
-    {nodes.toJS()}
+    {collapseToggle}&nbsp;
+    {String.fromCharCode(123)}{nodes.toJS()}
     {String.fromCharCode(125)}
     </div>;
   }
@@ -43,7 +42,7 @@ var OutputListNode = React.createClass({
       return <OutputNode leaf={value} className="arrayValue"/>
     });
 
-    return <div className="array">{nodes.toJS()}</div>;
+    return <div className="array">[{nodes.toJS()}]</div>;
   }
 });
 

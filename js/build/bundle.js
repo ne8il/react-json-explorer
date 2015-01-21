@@ -46,10 +46,10 @@ var OutputMapNode = React.createClass({displayName: "OutputMapNode",
   },
   render : function(){
 
-    var str = React.createElement("a", {href: "#", onClick: this.handleToggle}, this.state.collapsed ? '+' : '-');
+    var collapseToggle = React.createElement("a", {href: "#", onClick: this.handleToggle}, this.state.collapsed ? '+' : '-');
 
     if(this.state.collapsed){
-        return React.createElement("div", {className: "mapRow"}, str, " [Object object]")
+        return React.createElement("div", {className: "mapRow"}, collapseToggle, " ", String.fromCharCode(123), "...", String.fromCharCode(125))
     }
 
     var nodes = this.props.leaf.map(function(value, key){
@@ -57,9 +57,8 @@ var OutputMapNode = React.createClass({displayName: "OutputMapNode",
     });
 
     return React.createElement("div", {className: "map"}, 
-    str, 
-    String.fromCharCode(123), 
-    nodes.toJS(), 
+    collapseToggle, " ", 
+    String.fromCharCode(123), nodes.toJS(), 
     String.fromCharCode(125)
     );
   }
@@ -71,7 +70,7 @@ var OutputListNode = React.createClass({displayName: "OutputListNode",
       return React.createElement(OutputNode, {leaf: value, className: "arrayValue"})
     });
 
-    return React.createElement("div", {className: "array"}, nodes.toJS());
+    return React.createElement("div", {className: "array"}, "[", nodes.toJS(), "]");
   }
 });
 

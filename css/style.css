@@ -8,8 +8,37 @@ body {
 }
 
 
-table, td, th {
+table {
+  border-collapse:collapse;
+  font-size:12px;
+}
+
+tr td {
   border:1px solid black;
+  padding:5px;
+  vertical-align:top;
+}
+td table {
+  border:0px;
+}
+
+th {
+  background: #E4DEAF;
+  border: 1px solid #7A7829;
+  color:#333;
+  padding:5px;
+}
+
+span.number {
+  color:red;
+}
+
+span.boolean {
+  color:green;
+}
+
+span.string {
+  color:blue;
 }
 
 #page {
@@ -26,10 +55,6 @@ textarea {
 
 .mapKey {
   margin-left : 10px;
-}
-
-.mapKey, .mapValue, .arrayValue, .array {
-  display:inline-block;
 }
 
 .arrayValue {

@@ -1,66 +1,113 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"/Users/neil/gitprojects/react-json-explorer/js/src/JsonInput.js":[function(require,module,exports){
-var React = require('react')
-var Immutable = require('immutable');
+"use strict";
 
-var JsonInput = React.createClass({displayName: "JsonInput",
-  getInitialState: function() {
+var React = require("react");
+var Immutable = require("immutable");
+
+var JsonInput = React.createClass({
+  displayName: "JsonInput",
+
+  getInitialState: function getInitialState() {
     return this.props;
   },
-  handleChange: function(event) {
-    var val = event.target.value;
-    this.setState({value: val});
-    this.props.onInputChange(val);
+  handleChange: function handleChange(event) {
+    var value = event.target.value;
+
+    this.setState({ value: value });
+    this.props.onInputChange(value);
   },
-  render : function(){
+  render: function render() {
     var value = this.state.value;
     var styleProps = {
-      'width' : "100%",
-      'font-size' : '16px',
-      'height' : 200
-    }
+      width: "100%",
+      "font-size": "16px",
+      height: 200
+    };
 
-    return React.createElement("textarea", {style: styleProps, value: value, onChange: this.handleChange})
+    return React.createElement("textarea", { style: styleProps, value: value, onChange: this.handleChange });
   }
 });
 
 module.exports = JsonInput;
 
 },{"immutable":"/Users/neil/gitprojects/react-json-explorer/node_modules/immutable/dist/immutable.js","react":"/Users/neil/gitprojects/react-json-explorer/node_modules/react/react.js"}],"/Users/neil/gitprojects/react-json-explorer/js/src/OutputTree.js":[function(require,module,exports){
-var React = require('react')
-var Immutable = require('immutable');
+"use strict";
 
-var OutputTree = React.createClass({displayName: "OutputTree",
+var React = require("react");
+var Immutable = require("immutable");
 
-  getList : function(tree){
-    return tree.map(function(value, key){
-      console.log(value);
-      console.log(key);
+var OutputTree = React.createClass({
+  displayName: "OutputTree",
 
-      return React.createElement("tr", {className: "mapRow"}, 
-                React.createElement("td", {className: "mapKey"}, key, " : "), 
-                React.createElement("td", null, React.createElement(OutputTree, {className: "mapValue", tree: value}))
-              )
-    }).toJS();
+  getList: function getList(tree) {
+    return tree.map(function (value, key) {
+      return React.createElement(
+        "tr",
+        { className: "mapRow" },
+        React.createElement(
+          "td",
+          { className: "mapKey" },
+          key,
+          " : "
+        ),
+        React.createElement(
+          "td",
+          null,
+          React.createElement(OutputTree, { className: "mapValue", tree: value })
+        )
+      );
+    });
   },
 
-  getRows : function(tree){
-    if(Immutable.Map.isMap(tree) || Immutable.List.isList(tree) ){
-      console.log('get list for tree');
-      return this.getList(tree);
-    }else{
-      console.log('get regular node');
-      return React.createElement("tr", null, React.createElement("td", null, String(tree)));
-    }
+  getRows: function getRows(tree) {
+    return this.getList(tree).toJS();
   },
 
-  render: function(){
+  render: function render() {
     var tree = this.props.tree;
-    console.log(tree);
-    console.log('tree');
-    return React.createElement("table", {className: "tree"}, 
-      React.createElement("tbody", null, 
-        this.getRows(tree)
-      )
+    var isMap = Immutable.Map.isMap(tree);
+    var isList = Immutable.List.isList(tree);
+    var header = isMap ? "Object" : "Array";
+
+    if (isMap || isList) {
+      return React.createElement(
+        "table",
+        { className: "tree" },
+        React.createElement(
+          "thead",
+          null,
+          React.createElement(
+            "tr",
+            null,
+            React.createElement(
+              "th",
+              { colSpan: "2" },
+              header
+            )
+          )
+        ),
+        React.createElement(
+          "tbody",
+          null,
+          this.getRows(tree)
+        )
+      );
+    } else {
+      return React.createElement(PrimitiveNode, { val: tree });
+    }
+  }
+});
+
+var PrimitiveNode = React.createClass({
+  displayName: "PrimitiveNode",
+
+  render: function render() {
+    var type = typeof this.props.val;
+    console.log(typeof this.props.val);
+    return React.createElement(
+      "span",
+      { className: type },
+      String(this.props.val)
     );
   }
 });
@@ -92,89 +139,100 @@ var OutputMapNode = React.createClass({
 });
 */
 
-/*
-var OutputListNode = React.createClass({
-  render : function(){
-    var nodes = this.props.leaf.map(function(value, index){
-      return <tr>
-      <td>{index}</td>
-                <td><OutputNode leaf={value} className="arrayValue"/></td></tr>
-    });
-
-    return <table><tbody>[{nodes.toJS()}]</tbody></table>;
-  }
-});
-*/
-
 module.exports = OutputTree;
 
 },{"immutable":"/Users/neil/gitprojects/react-json-explorer/node_modules/immutable/dist/immutable.js","react":"/Users/neil/gitprojects/react-json-explorer/node_modules/react/react.js"}],"/Users/neil/gitprojects/react-json-explorer/js/src/main.js":[function(require,module,exports){
-var React = require('react')
-var Immutable = require('immutable');
-var JsonInput = require('./JsonInput.js');
-var OutputTree = require('./OutputTree.js');
-var store = require('store');
+"use strict";
 
-var ValidationMessage = React.createClass({displayName: "ValidationMessage",
-  render : function(){
-    return React.createElement("div", {class: "message"}, this.props.text)
+var React = require("react");
+var Immutable = require("immutable");
+var JsonInput = require("./JsonInput.js");
+var OutputTree = require("./OutputTree.js");
+var store = require("store");
+
+var ValidationMessage = React.createClass({
+  displayName: "ValidationMessage",
+
+  render: function render() {
+    return React.createElement(
+      "div",
+      { "class": "message" },
+      this.props.text
+    );
   }
 });
 
-var Page = React.createClass({displayName: "Page",
-  getInitialState : function(){
-    var inputValue = store.get('inputValue');
-    var valid = (inputValue && this._isValidJson(inputValue));
+var Page = React.createClass({
+  displayName: "Page",
+
+  getInitialState: function getInitialState() {
+    var inputValue = store.get("inputValue");
+    var valid = inputValue && this._isValidJson(inputValue);
     console.log(valid);
 
-    var initial =  valid ? inputValue : '{"key":"value","arrayKey":[1,2,3,4]}';
-    console.log(initial);
-    return {value: initial, validInput : true};
+    var initial = valid ? inputValue : "{\"key\":\"value\",\"arrayKey\":[1,2,3,4]}";
+    return { value: initial, validInput: true };
   },
-  _isValidJson : function(str){
+  _isValidJson: function _isValidJson(str) {
     var valid = true;
     try {
       JSON.parse(str);
-    }catch(e){
-      console.log('false');
+    } catch (e) {
+      console.log("false");
       valid = false;
-    }finally{
+    } finally {
       return valid;
     }
   },
-  onInputChange : function(val) {
-    try{
+  onInputChange: function onInputChange(val) {
+    try {
       var parse = JSON.parse(val);
 
       this.setState({
-        value : val,
-        validInput : true
+        value: val,
+        validInput: true
       });
-      store.set('inputValue', val);
-
-    }catch(e){
+      store.set("inputValue", val);
+    } catch (e) {
       this.setState({
-        validInput : false
-      })
+        validInput: false
+      });
     }
   },
-  render : function(){
-    var outputMessage = this.state.validInput ? '' : React.createElement(ValidationMessage, {text: "Invalid JSON"});
+  render: function render() {
+    var outputMessage = this.state.validInput ? "" : React.createElement(ValidationMessage, { text: "Invalid JSON" });
 
-    return React.createElement("div", null, 
-            "Input : ", outputMessage, 
-            React.createElement(JsonInput, {value: this.state.value, onInputChange: this.onInputChange}), 
-
-            "Output :", 
-            React.createElement(OutputTree, {tree: Immutable.fromJS(JSON.parse(this.state.value))})
-          )
+    return React.createElement(
+      "div",
+      null,
+      "Input : ",
+      outputMessage,
+      React.createElement(JsonInput, { value: this.state.value, onInputChange: this.onInputChange }),
+      "Output : (",
+      React.createElement(
+        "span",
+        { className: "number" },
+        "Number"
+      ),
+      " - ",
+      React.createElement(
+        "span",
+        { className: "string" },
+        "String"
+      ),
+      " - ",
+      React.createElement(
+        "span",
+        { className: "boolean" },
+        "Boolean"
+      ),
+      ")",
+      React.createElement(OutputTree, { tree: Immutable.fromJS(JSON.parse(this.state.value)) })
+    );
   }
 });
 
-React.render(
-  React.createElement(Page, null),
-  document.getElementById('page')
-);
+React.render(React.createElement(Page, null), document.getElementById("page"));
 
 },{"./JsonInput.js":"/Users/neil/gitprojects/react-json-explorer/js/src/JsonInput.js","./OutputTree.js":"/Users/neil/gitprojects/react-json-explorer/js/src/OutputTree.js","immutable":"/Users/neil/gitprojects/react-json-explorer/node_modules/immutable/dist/immutable.js","react":"/Users/neil/gitprojects/react-json-explorer/node_modules/react/react.js","store":"/Users/neil/gitprojects/react-json-explorer/node_modules/store/store.js"}],"/Users/neil/gitprojects/react-json-explorer/node_modules/immutable/dist/immutable.js":[function(require,module,exports){
 /**
@@ -23511,4 +23569,4 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}]},{},["/Users/neil/gitprojects/react-json-explorer/js/src/JsonInput.js","/Users/neil/gitprojects/react-json-explorer/js/src/OutputTree.js","/Users/neil/gitprojects/react-json-explorer/js/src/main.js"]);
+},{}]},{},["/Users/neil/gitprojects/react-json-explorer/js/src/main.js"]);

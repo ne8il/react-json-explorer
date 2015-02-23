@@ -4,36 +4,43 @@ var Immutable = require('immutable');
 var OutputTree = React.createClass({
 
   getList : function(tree){
-    return tree.map(function(value, key){
-      console.log(value);
-      console.log(key);
-
-      return <tr className="mapRow">
-                <td className="mapKey">{key} : </td>
-                <td><OutputTree className="mapValue" tree={value}/></td>
-              </tr>
-    }).toJS();
+    return tree.map((value, key) =>
+        <tr className="mapRow">
+          <td className="mapKey">{key} : </td>
+          <td><OutputTree className="mapValue" tree={value}/></td>
+        </tr>
+    );
   },
 
   getRows : function(tree){
-    if(Immutable.Map.isMap(tree) || Immutable.List.isList(tree) ){
-      console.log('get list for tree');
-      return this.getList(tree);
-    }else{
-      console.log('get regular node');
-      return <tr><td>{String(tree)}</td></tr>;
-    }
+    return this.getList(tree).toJS();
   },
 
   render: function(){
     var tree = this.props.tree;
-    console.log(tree);
-    console.log('tree');
-    return <table className="tree">
-      <tbody>
-        {this.getRows(tree)}
-      </tbody>
-    </table>;
+    var isMap = Immutable.Map.isMap(tree);
+    var isList = Immutable.List.isList(tree);
+    var header = isMap ? "Object" : "Array";
+
+    if(isMap || isList ){
+      return <table className="tree">
+        <thead><tr><th colSpan="2">{header}</th></tr></thead>
+
+        <tbody>
+          {this.getRows(tree)}
+        </tbody>
+      </table>;
+    }else{
+      return <PrimitiveNode val={tree}/>
+    }
+  }
+});
+
+var PrimitiveNode = React.createClass({
+  render : function(){
+    var type = typeof this.props.val;
+    console.log(typeof this.props.val);
+    return <span className={type}>{String(this.props.val)}</span>;
   }
 });
 
@@ -60,20 +67,6 @@ var OutputMapNode = React.createClass({
 
     return <table><tbody>{nodes.toJS()}</tbody></table>;
 
-  }
-});
-*/
-
-/*
-var OutputListNode = React.createClass({
-  render : function(){
-    var nodes = this.props.leaf.map(function(value, index){
-      return <tr>
-      <td>{index}</td>
-                <td><OutputNode leaf={value} className="arrayValue"/></td></tr>
-    });
-
-    return <table><tbody>[{nodes.toJS()}]</tbody></table>;
   }
 });
 */

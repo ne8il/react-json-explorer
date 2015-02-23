@@ -6,9 +6,9 @@ var JsonInput = React.createClass({
     return this.props;
   },
   handleChange: function(event) {
-    var val = event.target.value;
-    this.setState({value: val});
-    this.props.onInputChange(val);
+    var {value} = event.target;
+    this.setState({value: value});
+    this.props.onInputChange(value);
   },
   render : function(){
     var value = this.state.value;

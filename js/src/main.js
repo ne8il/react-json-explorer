@@ -17,7 +17,6 @@ var Page = React.createClass({
     console.log(valid);
 
     var initial =  valid ? inputValue : '{"key":"value","arrayKey":[1,2,3,4]}';
-    console.log(initial);
     return {value: initial, validInput : true};
   },
   _isValidJson : function(str){
@@ -54,7 +53,7 @@ var Page = React.createClass({
             Input : {outputMessage}
             <JsonInput value={this.state.value} onInputChange={this.onInputChange}/>
 
-            Output :
+            Output : (<span className="number">Number</span> - <span className="string">String</span> - <span className="boolean">Boolean</span>)
             <OutputTree tree={Immutable.fromJS(JSON.parse(this.state.value))}/>
           </div>
   }

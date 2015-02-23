@@ -39,6 +39,14 @@ var Immutable = require("immutable");
 var OutputTree = React.createClass({
   displayName: "OutputTree",
 
+  getInitialState: function getInitialState() {
+    return { collapsed: false };
+  },
+  handleToggle: function handleToggle(e) {
+    this.setState({ collapsed: !this.state.collapsed });
+    return false;
+  },
+
   getList: function getList(tree) {
     return tree.map(function (value, key) {
       return React.createElement(
@@ -70,6 +78,33 @@ var OutputTree = React.createClass({
     var header = isMap ? "Object" : "Array";
 
     if (isMap || isList) {
+      var collapseToggle = React.createElement(
+        "a",
+        { href: "#", onClick: this.handleToggle },
+        this.state.collapsed ? "+" : "-"
+      );
+
+      if (this.state.collapsed) {
+        if (isMap) {
+          return React.createElement(
+            "div",
+            { className: "mapRow" },
+            collapseToggle,
+            " ",
+            String.fromCharCode(123),
+            "...",
+            String.fromCharCode(125)
+          );
+        } else {
+          return React.createElement(
+            "div",
+            { className: "mapRow" },
+            collapseToggle,
+            " [...]"
+          );
+        }
+      }
+
       return React.createElement(
         "table",
         { className: "tree" },
@@ -82,7 +117,9 @@ var OutputTree = React.createClass({
             React.createElement(
               "th",
               { colSpan: "2" },
-              header
+              header,
+              " ",
+              collapseToggle
             )
           )
         ),
@@ -111,33 +148,6 @@ var PrimitiveNode = React.createClass({
     );
   }
 });
-
-/*
-var OutputMapNode = React.createClass({
-  getInitialState : function(){
-    return {collapsed : false}
-  },
-  handleToggle : function(e){
-    this.setState({collapsed : !this.state.collapsed});
-    return false;
-  },
-  render : function(){
-
-    var collapseToggle = <a href="#" onClick={this.handleToggle}>{this.state.collapsed ? '+' : '-'}</a>;
-
-    if(this.state.collapsed){
-        return <div className="mapRow">{collapseToggle} {String.fromCharCode(123)}...{String.fromCharCode(125)}</div>
-    }
-
-    var nodes = this.props.leaf.map(function(value, key){
-      return <tr className="mapRow"><td className="mapKey">{key} : </td> <td><OutputNode className="mapValue" leaf={value}/></td></tr>
-    });
-
-    return <table><tbody>{nodes.toJS()}</tbody></table>;
-
-  }
-});
-*/
 
 module.exports = OutputTree;
 

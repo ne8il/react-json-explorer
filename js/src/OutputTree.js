@@ -3,6 +3,14 @@ var Immutable = require('immutable');
 
 var OutputTree = React.createClass({
 
+  getInitialState : function(){
+    return {collapsed : false}
+  },
+  handleToggle : function(e){
+    this.setState({collapsed : !this.state.collapsed});
+    return false;
+  },
+
   getList : function(tree){
     return tree.map((value, key) =>
         <tr className="mapRow">
@@ -23,8 +31,18 @@ var OutputTree = React.createClass({
     var header = isMap ? "Object" : "Array";
 
     if(isMap || isList ){
+      var collapseToggle = <a href="#" onClick={this.handleToggle}>{this.state.collapsed ? '+' : '-'}</a>;
+
+      if(this.state.collapsed){
+          if(isMap){
+            return <div className="mapRow">{collapseToggle} {String.fromCharCode(123)}...{String.fromCharCode(125)}</div>
+          }else{
+            return <div className="mapRow">{collapseToggle} [...]</div>
+          }
+      }
+
       return <table className="tree">
-        <thead><tr><th colSpan="2">{header}</th></tr></thead>
+        <thead><tr><th colSpan="2">{header} {collapseToggle}</th></tr></thead>
 
         <tbody>
           {this.getRows(tree)}
@@ -43,32 +61,5 @@ var PrimitiveNode = React.createClass({
     return <span className={type}>{String(this.props.val)}</span>;
   }
 });
-
-/*
-var OutputMapNode = React.createClass({
-  getInitialState : function(){
-    return {collapsed : false}
-  },
-  handleToggle : function(e){
-    this.setState({collapsed : !this.state.collapsed});
-    return false;
-  },
-  render : function(){
-
-    var collapseToggle = <a href="#" onClick={this.handleToggle}>{this.state.collapsed ? '+' : '-'}</a>;
-
-    if(this.state.collapsed){
-        return <div className="mapRow">{collapseToggle} {String.fromCharCode(123)}...{String.fromCharCode(125)}</div>
-    }
-
-    var nodes = this.props.leaf.map(function(value, key){
-      return <tr className="mapRow"><td className="mapKey">{key} : </td> <td><OutputNode className="mapValue" leaf={value}/></td></tr>
-    });
-
-    return <table><tbody>{nodes.toJS()}</tbody></table>;
-
-  }
-});
-*/
 
 module.exports = OutputTree;

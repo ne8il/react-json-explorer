@@ -11,7 +11,9 @@
     "store": "^1.3.17",
     "watchify": "^2.2.1"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "babelify": "^5.0.3"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

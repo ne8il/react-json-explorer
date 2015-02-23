@@ -55,7 +55,7 @@ var Page = React.createClass({
             <JsonInput value={this.state.value} onInputChange={this.onInputChange}/>
 
             Output :
-            <OutputTree tree={this.state.value}/>
+            <OutputTree tree={Immutable.fromJS(JSON.parse(this.state.value))}/>
           </div>
   }
 });

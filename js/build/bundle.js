@@ -30,13 +30,43 @@ var React = require('react')
 var Immutable = require('immutable');
 
 var OutputTree = React.createClass({displayName: "OutputTree",
+
+  getList : function(tree){
+    return tree.map(function(value, key){
+      console.log(value);
+      console.log(key);
+
+      return React.createElement("tr", {className: "mapRow"}, 
+                React.createElement("td", {className: "mapKey"}, key, " : "), 
+                React.createElement("td", null, React.createElement(OutputTree, {className: "mapValue", tree: value}))
+              )
+    }).toJS();
+  },
+
+  getRows : function(tree){
+    if(Immutable.Map.isMap(tree) || Immutable.List.isList(tree) ){
+      console.log('get list for tree');
+      return this.getList(tree);
+    }else{
+      console.log('get regular node');
+      return React.createElement("tr", null, React.createElement("td", null, String(tree)));
+    }
+  },
+
   render: function(){
-    var tree = Immutable.fromJS(JSON.parse(this.props.tree));
-    return React.createElement("div", {className: "tree"}, React.createElement(OutputNode, {leaf: tree}));
+    var tree = this.props.tree;
+    console.log(tree);
+    console.log('tree');
+    return React.createElement("table", {className: "tree"}, 
+      React.createElement("tbody", null, 
+        this.getRows(tree)
+      )
+    );
   }
 });
 
-var OutputMapNode = React.createClass({displayName: "OutputMapNode",
+/*
+var OutputMapNode = React.createClass({
   getInitialState : function(){
     return {collapsed : false}
   },
@@ -46,45 +76,35 @@ var OutputMapNode = React.createClass({displayName: "OutputMapNode",
   },
   render : function(){
 
-    var collapseToggle = React.createElement("a", {href: "#", onClick: this.handleToggle}, this.state.collapsed ? '+' : '-');
+    var collapseToggle = <a href="#" onClick={this.handleToggle}>{this.state.collapsed ? '+' : '-'}</a>;
 
     if(this.state.collapsed){
-        return React.createElement("div", {className: "mapRow"}, collapseToggle, " ", String.fromCharCode(123), "...", String.fromCharCode(125))
+        return <div className="mapRow">{collapseToggle} {String.fromCharCode(123)}...{String.fromCharCode(125)}</div>
     }
 
     var nodes = this.props.leaf.map(function(value, key){
-      return React.createElement("div", {className: "mapRow"}, React.createElement("div", {className: "mapKey"}, key, " : "), " ", React.createElement(OutputNode, {className: "mapValue", leaf: value}))
+      return <tr className="mapRow"><td className="mapKey">{key} : </td> <td><OutputNode className="mapValue" leaf={value}/></td></tr>
     });
 
-    return React.createElement("div", {className: "map"}, 
-    collapseToggle, " ", 
-    String.fromCharCode(123), nodes.toJS(), 
-    String.fromCharCode(125)
-    );
+    return <table><tbody>{nodes.toJS()}</tbody></table>;
+
   }
 });
+*/
 
-var OutputListNode = React.createClass({displayName: "OutputListNode",
+/*
+var OutputListNode = React.createClass({
   render : function(){
     var nodes = this.props.leaf.map(function(value, index){
-      return React.createElement(OutputNode, {leaf: value, className: "arrayValue"})
+      return <tr>
+      <td>{index}</td>
+                <td><OutputNode leaf={value} className="arrayValue"/></td></tr>
     });
 
-    return React.createElement("div", {className: "array"}, "[", nodes.toJS(), "]");
+    return <table><tbody>[{nodes.toJS()}]</tbody></table>;
   }
 });
-
-var OutputNode = React.createClass({displayName: "OutputNode",
-  render : function(){
-    if(Immutable.Map.isMap(this.props.leaf)){
-      return React.createElement(OutputMapNode, React.__spread({},  this.props));
-    }else if(Immutable.List.isList(this.props.leaf)){
-      return React.createElement(OutputListNode, React.__spread({},  this.props));
-    }else{
-      return React.createElement("div", {className: this.props.className}, String(this.props.leaf));
-    }
-  }
-});
+*/
 
 module.exports = OutputTree;
 
@@ -146,7 +166,7 @@ var Page = React.createClass({displayName: "Page",
             React.createElement(JsonInput, {value: this.state.value, onInputChange: this.onInputChange}), 
 
             "Output :", 
-            React.createElement(OutputTree, {tree: this.state.value})
+            React.createElement(OutputTree, {tree: Immutable.fromJS(JSON.parse(this.state.value))})
           )
   }
 });
@@ -23491,4 +23511,4 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}]},{},["/Users/neil/gitprojects/react-json-explorer/js/src/main.js"]);
+},{}]},{},["/Users/neil/gitprojects/react-json-explorer/js/src/JsonInput.js","/Users/neil/gitprojects/react-json-explorer/js/src/OutputTree.js","/Users/neil/gitprojects/react-json-explorer/js/src/main.js"]);

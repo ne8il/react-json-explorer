@@ -2,12 +2,42 @@ var React = require('react')
 var Immutable = require('immutable');
 
 var OutputTree = React.createClass({
+
+  getList : function(tree){
+    return tree.map(function(value, key){
+      console.log(value);
+      console.log(key);
+
+      return <tr className="mapRow">
+                <td className="mapKey">{key} : </td>
+                <td><OutputTree className="mapValue" tree={value}/></td>
+              </tr>
+    }).toJS();
+  },
+
+  getRows : function(tree){
+    if(Immutable.Map.isMap(tree) || Immutable.List.isList(tree) ){
+      console.log('get list for tree');
+      return this.getList(tree);
+    }else{
+      console.log('get regular node');
+      return <tr><td>{String(tree)}</td></tr>;
+    }
+  },
+
   render: function(){
-    var tree = Immutable.fromJS(JSON.parse(this.props.tree));
-    return <div className="tree"><OutputNode leaf={tree}></OutputNode></div>;
+    var tree = this.props.tree;
+    console.log(tree);
+    console.log('tree');
+    return <table className="tree">
+      <tbody>
+        {this.getRows(tree)}
+      </tbody>
+    </table>;
   }
 });
 
+/*
 var OutputMapNode = React.createClass({
   getInitialState : function(){
     return {collapsed : false}
@@ -25,37 +55,27 @@ var OutputMapNode = React.createClass({
     }
 
     var nodes = this.props.leaf.map(function(value, key){
-      return <div className="mapRow"><div className="mapKey">{key} : </div> <OutputNode className="mapValue" leaf={value}/></div>
+      return <tr className="mapRow"><td className="mapKey">{key} : </td> <td><OutputNode className="mapValue" leaf={value}/></td></tr>
     });
 
-    return <div className="map">
-    {collapseToggle}&nbsp;
-    {String.fromCharCode(123)}{nodes.toJS()}
-    {String.fromCharCode(125)}
-    </div>;
+    return <table><tbody>{nodes.toJS()}</tbody></table>;
+
   }
 });
+*/
 
+/*
 var OutputListNode = React.createClass({
   render : function(){
     var nodes = this.props.leaf.map(function(value, index){
-      return <OutputNode leaf={value} className="arrayValue"/>
+      return <tr>
+      <td>{index}</td>
+                <td><OutputNode leaf={value} className="arrayValue"/></td></tr>
     });
 
-    return <div className="array">[{nodes.toJS()}]</div>;
+    return <table><tbody>[{nodes.toJS()}]</tbody></table>;
   }
 });
-
-var OutputNode = React.createClass({
-  render : function(){
-    if(Immutable.Map.isMap(this.props.leaf)){
-      return <OutputMapNode {...this.props} />;
-    }else if(Immutable.List.isList(this.props.leaf)){
-      return <OutputListNode {...this.props} />;
-    }else{
-      return <div className={this.props.className}>{String(this.props.leaf)}</div>;
-    }
-  }
-});
+*/
 
 module.exports = OutputTree;

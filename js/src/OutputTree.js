@@ -29,6 +29,7 @@ var OutputTree = React.createClass({
     var isMap = Immutable.Map.isMap(tree);
     var isList = Immutable.List.isList(tree);
     var header = isMap ? "Object" : "Array";
+    var headerClass = header.toLowerCase();
 
     if(isMap || isList ){
       var collapseToggle = <a href="#" onClick={this.handleToggle}>{this.state.collapsed ? '+' : '-'}</a>;
@@ -42,7 +43,7 @@ var OutputTree = React.createClass({
       }
 
       return <table className="tree">
-        <thead><tr><th colSpan="2">{header} {collapseToggle}</th></tr></thead>
+        <thead><tr><th className={headerClass} colSpan="2">{header} {collapseToggle}</th></tr></thead>
 
         <tbody>
           {this.getRows(tree)}

@@ -6,7 +6,7 @@ var store = require('store');
 
 var ValidationMessage = React.createClass({
   render : function(){
-    return <div class="message">{this.props.text}</div>
+    return <div className="message">{this.props.text}</div>
   }
 });
 
@@ -50,10 +50,13 @@ var Page = React.createClass({
     var outputMessage = this.state.validInput ? '' : <ValidationMessage text='Invalid JSON'/>;
 
     return <div>
-            Input : {outputMessage}
+            <h3>Input</h3>
+            {outputMessage}
+
             <JsonInput value={this.state.value} onInputChange={this.onInputChange}/>
 
-            Output : (<span className="number">Number</span> - <span className="string">String</span> - <span className="boolean">Boolean</span>)
+            <h3>Output</h3>
+            (<span className="number">Number</span> - <span className="string">String</span> - <span className="boolean">Boolean</span> - <span className="object">Object</span> - <span className="array">Array</span>)
             <OutputTree tree={Immutable.fromJS(JSON.parse(this.state.value))}/>
           </div>
   }

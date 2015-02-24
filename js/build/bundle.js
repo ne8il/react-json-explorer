@@ -76,6 +76,7 @@ var OutputTree = React.createClass({
     var isMap = Immutable.Map.isMap(tree);
     var isList = Immutable.List.isList(tree);
     var header = isMap ? "Object" : "Array";
+    var headerClass = header.toLowerCase();
 
     if (isMap || isList) {
       var collapseToggle = React.createElement(
@@ -116,7 +117,7 @@ var OutputTree = React.createClass({
             null,
             React.createElement(
               "th",
-              { colSpan: "2" },
+              { className: headerClass, colSpan: "2" },
               header,
               " ",
               collapseToggle
@@ -166,7 +167,7 @@ var ValidationMessage = React.createClass({
   render: function render() {
     return React.createElement(
       "div",
-      { "class": "message" },
+      { className: "message" },
       this.props.text
     );
   }
@@ -215,10 +216,19 @@ var Page = React.createClass({
     return React.createElement(
       "div",
       null,
-      "Input : ",
+      React.createElement(
+        "h3",
+        null,
+        "Input"
+      ),
       outputMessage,
       React.createElement(JsonInput, { value: this.state.value, onInputChange: this.onInputChange }),
-      "Output : (",
+      React.createElement(
+        "h3",
+        null,
+        "Output"
+      ),
+      "(",
       React.createElement(
         "span",
         { className: "number" },
@@ -235,6 +245,18 @@ var Page = React.createClass({
         "span",
         { className: "boolean" },
         "Boolean"
+      ),
+      " - ",
+      React.createElement(
+        "span",
+        { className: "object" },
+        "Object"
+      ),
+      " - ",
+      React.createElement(
+        "span",
+        { className: "array" },
+        "Array"
       ),
       ")",
       React.createElement(OutputTree, { tree: Immutable.fromJS(JSON.parse(this.state.value)) })

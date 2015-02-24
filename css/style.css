@@ -11,11 +11,13 @@ body {
 table {
   border-collapse:collapse;
   font-size:12px;
+    width:100%;
+    border-spacing:0;
 }
 
 tr td {
-  border:1px solid black;
-  padding:5px;
+  border:1px solid #ccc;
+  padding:2px;
   vertical-align:top;
 }
 td table {
@@ -23,12 +25,12 @@ td table {
 }
 
 th {
-  background: #E4DEAF;
-  border: 1px solid #7A7829;
   color:#333;
   padding:5px;
 }
-
+td span {
+    margin:5px;
+}
 span.number {
   color:red;
 }
@@ -41,8 +43,26 @@ span.string {
   color:blue;
 }
 
+span.object {
+  color:#dbb9ed;
+}
+
+th.object {
+  background: #dbb9ed;
+  border: 1px solid #b267d9;
+}
+
+span.array {
+  color:#e0dca0;
+}
+
+th.array {
+  background:#e0dca0;
+  border:1px solid #c3ba46;
+}
+
 #page {
-  width:960px;
+  width:1000px;
   margin:0px auto;
   background:white;
   padding:10px;
@@ -74,4 +94,11 @@ textarea {
 
 .map .map, .mapRow .mapRow {
   margin-left: 10px;
+}
+
+.message {
+  padding:10px;
+  background:#fcc2b7;
+  color:#8c1b07;
+  border:1px solid #dd2a0a;
 }

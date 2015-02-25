@@ -13,9 +13,9 @@ var OutputTree = React.createClass({
 
   getList : function(tree){
     return tree.map((value, key) =>
-        <tr className="mapRow">
-          <td className="mapKey">{key} : </td>
-          <td><OutputTree className="mapValue" tree={value}/></td>
+        <tr>
+          <td className="key">{key}</td>
+          <td><OutputTree tree={value}/></td>
         </tr>
     );
   },
@@ -34,11 +34,18 @@ var OutputTree = React.createClass({
     if(isMap || isList ){
       var collapseToggle = <a href="#" onClick={this.handleToggle}>{this.state.collapsed ? '+' : '-'}</a>;
 
+      if(tree.size === 0){
+        if(isMap){
+          return <span>{String.fromCharCode(123)} {String.fromCharCode(125)}</span>
+        }else{
+          return <span>[ ]</span>
+        }
+      }
       if(this.state.collapsed){
           if(isMap){
-            return <div className="mapRow">{collapseToggle} {String.fromCharCode(123)}...{String.fromCharCode(125)}</div>
+            return <div>{collapseToggle} {String.fromCharCode(123)}...{String.fromCharCode(125)}</div>
           }else{
-            return <div className="mapRow">{collapseToggle} [...]</div>
+            return <div>{collapseToggle} [...]</div>
           }
       }
 
@@ -57,8 +64,12 @@ var OutputTree = React.createClass({
 
 var PrimitiveNode = React.createClass({
   render : function(){
-    var type = typeof this.props.val;
-    console.log(typeof this.props.val);
+    var {val} = this.props;
+
+    var type = (val === null) ? 'null' :
+                (val === undefined) ? 'undefined' :
+                typeof val;
+
     return <span className={type}>{String(this.props.val)}</span>;
   }
 });

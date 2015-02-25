@@ -1,5 +1,4 @@
-var React = require('react')
-var Immutable = require('immutable');
+var React = require('react');
 
 var JsonInput = React.createClass({
   getInitialState: function() {
@@ -11,14 +10,7 @@ var JsonInput = React.createClass({
     this.props.onInputChange(value);
   },
   render : function(){
-    var value = this.state.value;
-    var styleProps = {
-      'width' : "100%",
-      'font-size' : '16px',
-      'height' : 200
-    }
-
-    return <textarea style={styleProps} value={value} onChange={this.handleChange}></textarea>
+    return <textarea value={this.state.value} onChange={this.handleChange}></textarea>
   }
 });
 

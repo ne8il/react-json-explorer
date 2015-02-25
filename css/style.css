@@ -3,7 +3,7 @@
 }
 
 body {
-  background:#b3e5fc;
+  background:#fff;
   font-family: 'Roboto', sans-serif;
 }
 
@@ -12,7 +12,16 @@ table {
   border-collapse:collapse;
   font-size:12px;
     width:100%;
+    background:white;
     border-spacing:0;
+}
+
+textarea {
+  width: 100%;
+  font-size: 16px;
+  height: 200px;
+  padding: 10px;
+  box-sizing: border-box;
 }
 
 tr td {
@@ -47,6 +56,19 @@ span.object {
   color:#dbb9ed;
 }
 
+span.date {
+
+}
+
+span.null {
+  color : darkolivegreen;
+}
+
+span.undefined {
+  color : purple;
+}
+
+
 th.object {
   background: #dbb9ed;
   border: 1px solid #b267d9;
@@ -62,38 +84,20 @@ th.array {
 }
 
 #page {
-  width:1000px;
+  max-width:1200px;
   margin:0px auto;
-  background:white;
   padding:10px;
-  box-shadow:0px 1px 3px #999;
 }
 
-textarea {
-  width:100%;
-}
-
-.mapKey {
-  margin-left : 10px;
-}
-
-.arrayValue {
+td.key {
+  text-align:right;
   margin-right:5px;
-}
-.arrayValue:after {
-  content : ","
-}
-
-.arrayValue:last-of-type:after {
-  content : ""
-}
-
-.map {
   padding:5px;
-}
-
-.map .map, .mapRow .mapRow {
-  margin-left: 10px;
+  font-weight:bold;
+  color:#666;
+  width:150px;
+  text-overflow:ellipsis;
+  overflow:hidden;
 }
 
 .message {

@@ -2,7 +2,6 @@
 "use strict";
 
 var React = require("react");
-var Immutable = require("immutable");
 
 var JsonInput = React.createClass({
   displayName: "JsonInput",
@@ -17,20 +16,13 @@ var JsonInput = React.createClass({
     this.props.onInputChange(value);
   },
   render: function render() {
-    var value = this.state.value;
-    var styleProps = {
-      width: "100%",
-      "font-size": "16px",
-      height: 200
-    };
-
-    return React.createElement("textarea", { style: styleProps, value: value, onChange: this.handleChange });
+    return React.createElement("textarea", { value: this.state.value, onChange: this.handleChange });
   }
 });
 
 module.exports = JsonInput;
 
-},{"immutable":"/Users/neil/gitprojects/react-json-explorer/node_modules/immutable/dist/immutable.js","react":"/Users/neil/gitprojects/react-json-explorer/node_modules/react/react.js"}],"/Users/neil/gitprojects/react-json-explorer/js/src/OutputTree.js":[function(require,module,exports){
+},{"react":"/Users/neil/gitprojects/react-json-explorer/node_modules/react/react.js"}],"/Users/neil/gitprojects/react-json-explorer/js/src/OutputTree.js":[function(require,module,exports){
 "use strict";
 
 var React = require("react");
@@ -51,17 +43,16 @@ var OutputTree = React.createClass({
     return tree.map(function (value, key) {
       return React.createElement(
         "tr",
-        { className: "mapRow" },
+        null,
         React.createElement(
           "td",
-          { className: "mapKey" },
-          key,
-          " : "
+          { className: "key" },
+          key
         ),
         React.createElement(
           "td",
           null,
-          React.createElement(OutputTree, { className: "mapValue", tree: value })
+          React.createElement(OutputTree, { tree: value })
         )
       );
     });
@@ -85,11 +76,28 @@ var OutputTree = React.createClass({
         this.state.collapsed ? "+" : "-"
       );
 
+      if (tree.size === 0) {
+        if (isMap) {
+          return React.createElement(
+            "span",
+            null,
+            String.fromCharCode(123),
+            " ",
+            String.fromCharCode(125)
+          );
+        } else {
+          return React.createElement(
+            "span",
+            null,
+            "[ ]"
+          );
+        }
+      }
       if (this.state.collapsed) {
         if (isMap) {
           return React.createElement(
             "div",
-            { className: "mapRow" },
+            null,
             collapseToggle,
             " ",
             String.fromCharCode(123),
@@ -99,7 +107,7 @@ var OutputTree = React.createClass({
         } else {
           return React.createElement(
             "div",
-            { className: "mapRow" },
+            null,
             collapseToggle,
             " [...]"
           );
@@ -140,8 +148,10 @@ var PrimitiveNode = React.createClass({
   displayName: "PrimitiveNode",
 
   render: function render() {
-    var type = typeof this.props.val;
-    console.log(typeof this.props.val);
+    var val = this.props.val;
+
+    var type = val === null ? "null" : val === undefined ? "undefined" : typeof val;
+
     return React.createElement(
       "span",
       { className: type },
@@ -234,7 +244,7 @@ var Page = React.createClass({
         { className: "number" },
         "Number"
       ),
-      " - ",
+      "- ",
       React.createElement(
         "span",
         { className: "string" },
@@ -252,11 +262,23 @@ var Page = React.createClass({
         { className: "object" },
         "Object"
       ),
-      " - ",
+      "- ",
       React.createElement(
         "span",
         { className: "array" },
         "Array"
+      ),
+      "- ",
+      React.createElement(
+        "span",
+        { className: "null" },
+        "null"
+      ),
+      "- ",
+      React.createElement(
+        "span",
+        { className: "undefined" },
+        "undefined"
       ),
       ")",
       React.createElement(OutputTree, { tree: Immutable.fromJS(JSON.parse(this.state.value)) })

@@ -56,7 +56,11 @@ var Page = React.createClass({
             <JsonInput value={this.state.value} onInputChange={this.onInputChange}/>
 
             <h3>Output</h3>
-            (<span className="number">Number</span> - <span className="string">String</span> - <span className="boolean">Boolean</span> - <span className="object">Object</span> - <span className="array">Array</span>)
+            (<span className="number">Number</span>
+            - <span className="string">String</span> - <span className="boolean">Boolean</span> - <span className="object">Object</span>
+             - <span className="array">Array</span>
+             - <span className="null">null</span>
+             - <span className="undefined">undefined</span>)
             <OutputTree tree={Immutable.fromJS(JSON.parse(this.state.value))}/>
           </div>
   }

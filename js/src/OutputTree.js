@@ -1,6 +1,14 @@
 var React = require('react')
 var Immutable = require('immutable');
 
+function selectElementContents(el) {
+    var range = document.createRange();
+    range.selectNodeContents(el);
+    var sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+}
+
 var OutputTree = React.createClass({
 
   getInitialState : function(){
@@ -63,14 +71,19 @@ var OutputTree = React.createClass({
 });
 
 var PrimitiveNode = React.createClass({
+  onInputClick : function(e){
+    selectElementContents(e.currentTarget);
+  },
+
   render : function(){
     var {val} = this.props;
 
     var type = (val === null) ? 'null' :
                 (val === undefined) ? 'undefined' :
                 typeof val;
+    type += ' type';
 
-    return <span className={type}>{String(this.props.val)}</span>;
+    return <span className={type} onClick={this.onInputClick}>{String(this.props.val)}</span>;
   }
 });
 

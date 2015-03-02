@@ -49,6 +49,7 @@ var Page = React.createClass({
   render : function(){
     var outputMessage = this.state.validInput ? '' : <ValidationMessage text='Invalid JSON'/>;
 
+    var exampleStyle = {padding:"10px"};
     return <div>
             <h3>Input</h3>
             {outputMessage}
@@ -56,11 +57,15 @@ var Page = React.createClass({
             <JsonInput value={this.state.value} onInputChange={this.onInputChange}/>
 
             <h3>Output</h3>
-            (<span className="number">Number</span>
-            - <span className="string">String</span> - <span className="boolean">Boolean</span> - <span className="object">Object</span>
-             - <span className="array">Array</span>
-             - <span className="null">null</span>
-             - <span className="undefined">undefined</span>)
+            <div style={exampleStyle}>
+            <span className="number type">Number</span>
+            - <span className="string type">String</span>
+             - <span className="boolean type">Boolean</span>
+             - <span className="object type">Object</span>
+             - <span className="array type">Array</span>
+             - <span className="null type">null</span>
+             - <span className="undefined type">undefined</span>
+             </div>
             <OutputTree tree={Immutable.fromJS(JSON.parse(this.state.value))}/>
           </div>
   }

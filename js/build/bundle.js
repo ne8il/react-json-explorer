@@ -28,6 +28,14 @@ module.exports = JsonInput;
 var React = require("react");
 var Immutable = require("immutable");
 
+function selectElementContents(el) {
+  var range = document.createRange();
+  range.selectNodeContents(el);
+  var sel = window.getSelection();
+  sel.removeAllRanges();
+  sel.addRange(range);
+}
+
 var OutputTree = React.createClass({
   displayName: "OutputTree",
 
@@ -147,14 +155,19 @@ var OutputTree = React.createClass({
 var PrimitiveNode = React.createClass({
   displayName: "PrimitiveNode",
 
+  onInputClick: function onInputClick(e) {
+    selectElementContents(e.currentTarget);
+  },
+
   render: function render() {
     var val = this.props.val;
 
     var type = val === null ? "null" : val === undefined ? "undefined" : typeof val;
+    type += " type";
 
     return React.createElement(
       "span",
-      { className: type },
+      { className: type, onClick: this.onInputClick },
       String(this.props.val)
     );
   }
@@ -223,6 +236,7 @@ var Page = React.createClass({
   render: function render() {
     var outputMessage = this.state.validInput ? "" : React.createElement(ValidationMessage, { text: "Invalid JSON" });
 
+    var exampleStyle = { padding: "10px" };
     return React.createElement(
       "div",
       null,
@@ -238,49 +252,51 @@ var Page = React.createClass({
         null,
         "Output"
       ),
-      "(",
       React.createElement(
-        "span",
-        { className: "number" },
-        "Number"
+        "div",
+        { style: exampleStyle },
+        React.createElement(
+          "span",
+          { className: "number type" },
+          "Number"
+        ),
+        "- ",
+        React.createElement(
+          "span",
+          { className: "string type" },
+          "String"
+        ),
+        "- ",
+        React.createElement(
+          "span",
+          { className: "boolean type" },
+          "Boolean"
+        ),
+        "- ",
+        React.createElement(
+          "span",
+          { className: "object type" },
+          "Object"
+        ),
+        "- ",
+        React.createElement(
+          "span",
+          { className: "array type" },
+          "Array"
+        ),
+        "- ",
+        React.createElement(
+          "span",
+          { className: "null type" },
+          "null"
+        ),
+        "- ",
+        React.createElement(
+          "span",
+          { className: "undefined type" },
+          "undefined"
+        )
       ),
-      "- ",
-      React.createElement(
-        "span",
-        { className: "string" },
-        "String"
-      ),
-      " - ",
-      React.createElement(
-        "span",
-        { className: "boolean" },
-        "Boolean"
-      ),
-      " - ",
-      React.createElement(
-        "span",
-        { className: "object" },
-        "Object"
-      ),
-      "- ",
-      React.createElement(
-        "span",
-        { className: "array" },
-        "Array"
-      ),
-      "- ",
-      React.createElement(
-        "span",
-        { className: "null" },
-        "null"
-      ),
-      "- ",
-      React.createElement(
-        "span",
-        { className: "undefined" },
-        "undefined"
-      ),
-      ")",
       React.createElement(OutputTree, { tree: Immutable.fromJS(JSON.parse(this.state.value)) })
     );
   }

@@ -22,10 +22,12 @@ textarea {
   height: 200px;
   padding: 10px;
   box-sizing: border-box;
+    border:1px solid #ddd;
+    font-family:monospace;
 }
 
 tr td {
-  border:1px solid #ccc;
+  border:1px solid #ddd;
   padding:2px;
   vertical-align:top;
 }
@@ -41,46 +43,47 @@ td span {
     margin:5px;
 }
 span.number {
-  color:red;
+  background-color:#fbd9dd;
+  border-color:#f6abb4;
 }
 
 span.boolean {
-  color:green;
+  background-color:#e0f8e6;
+  border-color:#7ee39a;
 }
 
 span.string {
-  color:blue;
+  background-color:#d7edff;
+  border-color:#82c6ff;
 }
 
-span.object {
-  color:#dbb9ed;
+.object {
+  background: #dbb9ed;
+  border: 1px solid #b267d9;
+  padding:5px;
 }
 
-span.date {
-
+span.type {
+  padding:5px;
+  display:inline-block;
+  border-width:1px;
+  border-style:solid;
+  color:#333;
 }
-
 span.null {
-  color : darkolivegreen;
+  background-color : #f7eadd;
+  border-color:#e7c198;
 }
 
 span.undefined {
-  color : purple;
+  background-color : #f4daf3;
+  border-color:#db8cda;
 }
 
-
-th.object {
-  background: #dbb9ed;
-  border: 1px solid #b267d9;
-}
-
-span.array {
-  color:#e0dca0;
-}
-
-th.array {
-  background:#e0dca0;
-  border:1px solid #c3ba46;
+.array {
+  background:#fbfadb;
+  border:1px solid #f2f08f;
+  padding:5px;
 }
 
 #page {

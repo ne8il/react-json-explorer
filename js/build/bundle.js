@@ -175,13 +175,66 @@ var PrimitiveNode = React.createClass({
 
 module.exports = OutputTree;
 
-},{"immutable":"/Users/neil/gitprojects/react-json-explorer/node_modules/immutable/dist/immutable.js","react":"/Users/neil/gitprojects/react-json-explorer/node_modules/react/react.js"}],"/Users/neil/gitprojects/react-json-explorer/js/src/main.js":[function(require,module,exports){
+},{"immutable":"/Users/neil/gitprojects/react-json-explorer/node_modules/immutable/dist/immutable.js","react":"/Users/neil/gitprojects/react-json-explorer/node_modules/react/react.js"}],"/Users/neil/gitprojects/react-json-explorer/js/src/PreviousValueList.js":[function(require,module,exports){
+"use strict";
+
+var React = require("react");
+
+var PreviousValueItem = React.createClass({
+  displayName: "PreviousValueItem",
+
+  getInitialState: function getInitialState() {
+    return {
+      value: this.props.value,
+      created: new Date()
+    };
+  },
+  render: function render() {
+    var createdDate = this.state.created.toISOString();
+
+    return React.createElement(
+      "li",
+      { className: "previousValue" },
+      this.props.index,
+      " : (Created ",
+      createdDate,
+      ") ",
+      React.createElement("br", null),
+      "Value : ",
+      React.createElement(
+        "span",
+        { className: "previousValueJSON" },
+        this.props.value
+      )
+    );
+  }
+});
+
+var PreviousValueList = React.createClass({
+  displayName: "PreviousValueList",
+
+  render: function render() {
+    var PreviousValues = this.props.values.map(function (value, index) {
+      return React.createElement(PreviousValueItem, { value: value, index: index });
+    });
+    return React.createElement(
+      "ul",
+      null,
+      PreviousValues.toJS()
+    );
+  }
+});
+
+module.exports = PreviousValueList;
+
+},{"react":"/Users/neil/gitprojects/react-json-explorer/node_modules/react/react.js"}],"/Users/neil/gitprojects/react-json-explorer/js/src/main.js":[function(require,module,exports){
 "use strict";
 
 var React = require("react");
 var Immutable = require("immutable");
 var JsonInput = require("./JsonInput.js");
 var OutputTree = require("./OutputTree.js");
+var PreviousValueList = require("./PreviousValueList.js");
 var store = require("store");
 
 var ValidationMessage = React.createClass({
@@ -202,10 +255,10 @@ var Page = React.createClass({
   getInitialState: function getInitialState() {
     var inputValue = store.get("inputValue");
     var valid = inputValue && this._isValidJson(inputValue);
-    console.log(valid);
 
     var initial = valid ? inputValue : "{\"key\":\"value\",\"arrayKey\":[1,2,3,4]}";
-    return { value: initial, validInput: true };
+
+    return { value: initial, validInput: true, previousValues: new Immutable.List() };
   },
   _isValidJson: function _isValidJson(str) {
     var valid = true;
@@ -221,13 +274,20 @@ var Page = React.createClass({
   onInputChange: function onInputChange(val) {
     try {
       var parse = JSON.parse(val);
+      console.log(this.state.previousValues);
 
       this.setState({
         value: val,
-        validInput: true
+        validInput: true,
+        previousValues: this.state.previousValues.unshift(val)
       });
+
+      console.log(this.state.previousValues.toJS());
+
       store.set("inputValue", val);
     } catch (e) {
+      console.log(e);
+
       this.setState({
         validInput: false
       });
@@ -237,74 +297,88 @@ var Page = React.createClass({
     var outputMessage = this.state.validInput ? "" : React.createElement(ValidationMessage, { text: "Invalid JSON" });
 
     var exampleStyle = { padding: "10px" };
+
     return React.createElement(
-      "div",
+      "table",
       null,
       React.createElement(
-        "h3",
+        "tr",
         null,
-        "Input"
-      ),
-      outputMessage,
-      React.createElement(JsonInput, { value: this.state.value, onInputChange: this.onInputChange }),
-      React.createElement(
-        "h3",
-        null,
-        "Output"
-      ),
-      React.createElement(
-        "div",
-        { style: exampleStyle },
         React.createElement(
-          "span",
-          { className: "number type" },
-          "Number"
+          "td",
+          { className: "main" },
+          React.createElement(
+            "h3",
+            null,
+            "Input"
+          ),
+          outputMessage,
+          React.createElement(JsonInput, { value: this.state.value, onInputChange: this.onInputChange }),
+          React.createElement(
+            "h3",
+            null,
+            "Output"
+          ),
+          React.createElement(
+            "div",
+            { style: exampleStyle },
+            React.createElement(
+              "span",
+              { className: "number type" },
+              "Number"
+            ),
+            "- ",
+            React.createElement(
+              "span",
+              { className: "string type" },
+              "String"
+            ),
+            "- ",
+            React.createElement(
+              "span",
+              { className: "boolean type" },
+              "Boolean"
+            ),
+            "- ",
+            React.createElement(
+              "span",
+              { className: "object type" },
+              "Object"
+            ),
+            "- ",
+            React.createElement(
+              "span",
+              { className: "array type" },
+              "Array"
+            ),
+            "- ",
+            React.createElement(
+              "span",
+              { className: "null type" },
+              "null"
+            ),
+            "- ",
+            React.createElement(
+              "span",
+              { className: "undefined type" },
+              "undefined"
+            )
+          ),
+          React.createElement(OutputTree, { tree: Immutable.fromJS(JSON.parse(this.state.value)) })
         ),
-        "- ",
         React.createElement(
-          "span",
-          { className: "string type" },
-          "String"
-        ),
-        "- ",
-        React.createElement(
-          "span",
-          { className: "boolean type" },
-          "Boolean"
-        ),
-        "- ",
-        React.createElement(
-          "span",
-          { className: "object type" },
-          "Object"
-        ),
-        "- ",
-        React.createElement(
-          "span",
-          { className: "array type" },
-          "Array"
-        ),
-        "- ",
-        React.createElement(
-          "span",
-          { className: "null type" },
-          "null"
-        ),
-        "- ",
-        React.createElement(
-          "span",
-          { className: "undefined type" },
-          "undefined"
+          "td",
+          { className: "previousValues" },
+          React.createElement(PreviousValueList, { values: this.state.previousValues })
         )
-      ),
-      React.createElement(OutputTree, { tree: Immutable.fromJS(JSON.parse(this.state.value)) })
+      )
     );
   }
 });
 
 React.render(React.createElement(Page, null), document.getElementById("page"));
 
-},{"./JsonInput.js":"/Users/neil/gitprojects/react-json-explorer/js/src/JsonInput.js","./OutputTree.js":"/Users/neil/gitprojects/react-json-explorer/js/src/OutputTree.js","immutable":"/Users/neil/gitprojects/react-json-explorer/node_modules/immutable/dist/immutable.js","react":"/Users/neil/gitprojects/react-json-explorer/node_modules/react/react.js","store":"/Users/neil/gitprojects/react-json-explorer/node_modules/store/store.js"}],"/Users/neil/gitprojects/react-json-explorer/node_modules/immutable/dist/immutable.js":[function(require,module,exports){
+},{"./JsonInput.js":"/Users/neil/gitprojects/react-json-explorer/js/src/JsonInput.js","./OutputTree.js":"/Users/neil/gitprojects/react-json-explorer/js/src/OutputTree.js","./PreviousValueList.js":"/Users/neil/gitprojects/react-json-explorer/js/src/PreviousValueList.js","immutable":"/Users/neil/gitprojects/react-json-explorer/node_modules/immutable/dist/immutable.js","react":"/Users/neil/gitprojects/react-json-explorer/node_modules/react/react.js","store":"/Users/neil/gitprojects/react-json-explorer/node_modules/store/store.js"}],"/Users/neil/gitprojects/react-json-explorer/node_modules/immutable/dist/immutable.js":[function(require,module,exports){
 /**
  *  Copyright (c) 2014, Facebook, Inc.
  *  All rights reserved.

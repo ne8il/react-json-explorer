@@ -26,20 +26,20 @@ textarea {
     font-family:monospace;
 }
 
-tr td {
+.main tr td {
   border:1px solid #ddd;
   padding:2px;
   vertical-align:top;
 }
-td table {
+.main td table {
   border:0px;
 }
 
-th {
+.main th {
   color:#333;
   padding:5px;
 }
-td span {
+.main td span {
     margin:5px;
 }
 span.number {
@@ -108,4 +108,28 @@ td.key {
   background:#fcc2b7;
   color:#8c1b07;
   border:1px solid #dd2a0a;
+}
+
+.previousValues {
+  vertical-align:top;
+  padding-left:20px;
+  width:200px;
+}
+
+.previousValues ul {
+  list-style:none;
+}
+
+li.previousValue {
+  border:1px solid #ccc;
+  padding:10px;
+  cursor:pointer;
+}
+
+span.previousValueJSON {
+  width:100px;
+  text-overflow:ellipsis;
+  overflow:hidden;
+  white-space:nowrap;
+  display:inline-block;
 }

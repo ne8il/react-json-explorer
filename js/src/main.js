@@ -2,6 +2,7 @@ var React = require('react')
 var Immutable = require('immutable');
 var JsonInput = require('./JsonInput.js');
 var OutputTree = require('./OutputTree.js');
+var PreviousValueList = require('./PreviousValueList.js');
 var store = require('store');
 
 var ValidationMessage = React.createClass({
@@ -14,10 +15,10 @@ var Page = React.createClass({
   getInitialState : function(){
     var inputValue = store.get('inputValue');
     var valid = (inputValue && this._isValidJson(inputValue));
-    console.log(valid);
 
     var initial =  valid ? inputValue : '{"key":"value","arrayKey":[1,2,3,4]}';
-    return {value: initial, validInput : true};
+
+    return {value: initial, validInput : true, previousValues : new Immutable.List() };
   },
   _isValidJson : function(str){
     var valid = true;
@@ -33,14 +34,21 @@ var Page = React.createClass({
   onInputChange : function(val) {
     try{
       var parse = JSON.parse(val);
+      console.log(this.state.previousValues);
 
       this.setState({
         value : val,
-        validInput : true
+        validInput : true,
+        previousValues : this.state.previousValues.unshift(val)
       });
+
+      console.log(this.state.previousValues.toJS());
+
       store.set('inputValue', val);
 
     }catch(e){
+      console.log(e);
+
       this.setState({
         validInput : false
       })
@@ -50,7 +58,10 @@ var Page = React.createClass({
     var outputMessage = this.state.validInput ? '' : <ValidationMessage text='Invalid JSON'/>;
 
     var exampleStyle = {padding:"10px"};
-    return <div>
+
+    return <table>
+          <tr>
+          <td className="main">
             <h3>Input</h3>
             {outputMessage}
 
@@ -67,7 +78,14 @@ var Page = React.createClass({
              - <span className="undefined type">undefined</span>
              </div>
             <OutputTree tree={Immutable.fromJS(JSON.parse(this.state.value))}/>
-          </div>
+          </td>
+
+          <td className="previousValues">
+            <PreviousValueList values={this.state.previousValues} />
+          </td>
+
+          </tr>
+          </table>
   }
 });
 
